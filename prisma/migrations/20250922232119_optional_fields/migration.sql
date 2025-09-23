@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "public"."pets" ALTER COLUMN "age" DROP NOT NULL,
+ALTER COLUMN "energy_level" DROP NOT NULL,
+ALTER COLUMN "size" DROP NOT NULL,
+ALTER COLUMN "independence" DROP NOT NULL;
