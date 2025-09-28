@@ -142,7 +142,3 @@ yarn build
 ```bash
 yarn start
 ```
-
-## 📄 Licença
-
-ISC
