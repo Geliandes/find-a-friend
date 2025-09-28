@@ -1,40 +1,47 @@
 import { hash } from 'bcryptjs'
-import { UsersRepository } from '@/repositories/users-repository'
-import { UserAlreadyExistsError } from './errors/user-already-exists'
-import { User } from '@prisma/client'
+import { OrganizationsRepository } from '@/repositories/organization-repository'
+import { OrganizationAlreadyExistsError } from './errors/organization-already-exists'
+import { Organization } from '@prisma/client'
 
 interface RegisterUseCaseRequest {
   name: string
   email: string
   password: string
+  address: string
+  whatsapp: string
 }
 
 interface RegisterUseCaseResponse {
-  user: User
+  organization: Organization
 }
 
 export class RegisterUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(private organizationsRepository: OrganizationsRepository) {}
 
   async execute({
     name,
     email,
     password,
+    address,
+    whatsapp,
   }: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
     const password_hash = await hash(password, 6)
 
-    const userWithSameEmail = await this.usersRepository.findByEmail(email)
+    const organizationWithSameEmail =
+      await this.organizationsRepository.findByEmail(email)
 
-    if (userWithSameEmail) {
-      throw new UserAlreadyExistsError()
+    if (organizationWithSameEmail) {
+      throw new OrganizationAlreadyExistsError()
     }
 
-    const user = await this.usersRepository.create({
+    const organization = await this.organizationsRepository.create({
       name,
       email,
       password_hash,
+      address,
+      whatsapp,
     })
 
-    return { user }
+    return { organization }
   }
 }

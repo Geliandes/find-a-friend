@@ -1,69 +1,79 @@
 import { expect, describe, it, beforeEach } from 'vitest'
 import { compare } from 'bcryptjs'
-import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
+import { InMemoryOrganizationsRepository } from '@/repositories/in-memory/in-memory-organization-repository'
 import { RegisterUseCase } from './register'
-import { UserAlreadyExistsError } from './errors/user-already-exists'
+import { OrganizationAlreadyExistsError } from './errors/organization-already-exists'
 
-let usersRepository: InMemoryUsersRepository
+let organizationsRepository: InMemoryOrganizationsRepository
 let sut: RegisterUseCase
 
 describe('Register Use Case', () => {
   beforeEach(() => {
-    usersRepository = new InMemoryUsersRepository()
-    sut = new RegisterUseCase(usersRepository)
+    organizationsRepository = new InMemoryOrganizationsRepository()
+    sut = new RegisterUseCase(organizationsRepository)
   })
 
-  it('should hash user password upon registration', async () => {
+  it('should hash organization password upon registration', async () => {
     const request = {
-      name: 'John Doe',
-      email: 'john.doe@example.com',
+      name: 'ONG Amigo Pet',
+      email: 'ong@example.com',
       password: '123456',
+      address: 'Rua Central, 123',
+      whatsapp: '11999999999',
     }
 
-    const { user } = await sut.execute(request)
+    const { organization } = await sut.execute(request)
 
     const isPasswordCorrectlyHashed = await compare(
       request.password,
-      user.password_hash,
+      organization.password_hash,
     )
 
     expect(isPasswordCorrectlyHashed).toBe(true)
   })
 
   it('should not be able to register with an existing email', async () => {
-    const email = 'john.doe@example.com'
+    const email = 'ong@example.com'
 
     await sut.execute({
-      name: 'John Doe',
+      name: 'ONG Amigo Pet',
       email,
       password: '123456',
+      address: 'Rua Central, 123',
+      whatsapp: '11999999999',
     })
 
     await expect(
       sut.execute({
-        name: 'John Doe',
+        name: 'ONG Amigo Pet',
         email,
         password: '123456',
+        address: 'Rua Central, 123',
+        whatsapp: '11999999999',
       }),
-    ).rejects.toBeInstanceOf(UserAlreadyExistsError)
+    ).rejects.toBeInstanceOf(OrganizationAlreadyExistsError)
   })
 
-  it('should be able to register', async () => {
+  it('should be able to register an organization', async () => {
     const request = {
-      name: 'John Doe',
-      email: 'john.doe@example.com',
+      name: 'ONG Amigo Pet',
+      email: 'ong@example.com',
       password: '123456',
+      address: 'Rua Central, 123',
+      whatsapp: '11999999999',
     }
 
-    const { user } = await sut.execute(request)
+    const { organization } = await sut.execute(request)
 
-    expect(user).toEqual(
+    expect(organization).toEqual(
       expect.objectContaining({
         id: expect.any(String),
         name: request.name,
         email: request.email,
+        address: request.address,
+        whatsapp: request.whatsapp,
       }),
     )
-    expect(user.password_hash).toEqual(expect.any(String))
+    expect(organization.password_hash).toEqual(expect.any(String))
   })
 })

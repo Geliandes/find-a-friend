@@ -7,29 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
-  MEMBER
-}
-
-model User {
+model Organization {
   id            String   @id @default(uuid())
   name          String
   email         String   @unique
   password_hash String
-  role          Role     @default(MEMBER)
+  address       String
+  whatsapp      String
   created_at    DateTime @default(now())
-
-  @@map("users")
-}
-
-model Organization {
-  id         String   @id @default(uuid())
-  name       String
-  address    String
-  whatsapp   String
-  created_at DateTime @default(now())
-  pets       Pet[]
+  pets          Pet[]
 
   @@map("organizations")
 }
@@ -41,9 +27,9 @@ enum Age {
 }
 
 enum EnergyLevel {
-  LOW
-  MEDIUM
-  HIGH
+  BAIXA
+  MEDIA
+  ALTA
 }
 
 enum Size {
@@ -53,9 +39,9 @@ enum Size {
 }
 
 enum Independence {
-  BAIXO
-  MEDIO
-  ALTO
+  BAIXA
+  MEDIA
+  ALTA
 }
 
 model Pet {
