@@ -25,7 +25,7 @@ API para conectar pets em busca de adoção com organizações e pessoas interes
 
 ### Pré-requisitos
 
-- Node.js (versão 18+)
+- Node.js (versão 20+)
 - Docker e Docker Compose
 - Yarn
 
